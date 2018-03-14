@@ -1,7 +1,7 @@
 'use strict'
 const bcrypt = require ('bcrypt-nodejs') //modulo para encriptar contraseña
 const User = require('../models/user')
-
+const jwt = require('../services/jwt')
 function pruebas (req,res){
     res.status(200).send({
         message:'probando accion del controlador'
@@ -71,12 +71,15 @@ function loginUser(req,res){
                         //devolver los datos del usuario loggeado
                         if (params.gethash){
                             //devolver un token de jwt
+                            res.status(200).send({
+                                token: jwt.createToken(user)
+                            })
                         }else{
                         
                             res.status(200).send({user})
                         }
                     }else {
-                        res.status(404).send({message: 'el usuario no ha podido logueado'})
+                        res.status(404).send({message: 'el usuario no ha podido loguearse'})
                     }
                 })
             }
