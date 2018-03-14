@@ -4,6 +4,8 @@ const jwt = require('jwt-simple')
 const moment = require ('moment')
 const secret = 'clave_secreta_curso'
 
+//generar token de usuario con los datos del usuario loggeado en la bdd
+
 exports.createToken = function(user){
     let payload = {
         sub: user._id,
