@@ -88,8 +88,31 @@ function loginUser(req,res){
 
 }
 
+function updateUser(req, res){
+    //metodo para actualizar un usuario almancenado en la bdd
+
+    const userId = req.params.id;
+    const update = req.body;
+   
+   
+
+    User.findByIdAndUpdate(userId, update, (err, userUpdated)=>{
+        if (err){
+            res.status(500).send({message: 'Error al actualizar el usuario'});
+        }else{
+            if (!userUpdated){
+                res.status(404).send({message: 'no se ha podido actualizar el user'})
+            }else{
+                res.status(200).send({user: userUpdated})
+            }
+        }
+
+    })
+
+}
 module.exports = {
     pruebas,
     saveUser,
-    loginUser
+    loginUser,
+    updateUser
 };
