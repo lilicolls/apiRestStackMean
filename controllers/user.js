@@ -110,9 +110,55 @@ function updateUser(req, res){
     })
 
 }
+
+function uploadImage(req,res){
+    
+    const userId = req.params.id;
+    const file_name = 'no subido...'
+    console.log("entra al metodo")
+   // console.log(req)
+    if (req.files){
+        console.log("you are right")
+        const file_path = req.files.image.path;
+        const file_split = file_path.split('\/')
+        const file_name = file_split[2]
+        const ext_split = file_name.split('\.')
+        const file_ext = ext_split[1]
+       console.log(ext_split)
+
+        //comprobar que el archivo subido sea una imagen
+    if(file_ext == 'png'|| file_ext == 'jpg' || file_ext == 'gif'){
+        //si la extesion es correcta se actualiza en la bdd
+
+        User.findByIdAndUpdate(userId,{image: file_name}, (err, userUpdated) => {
+            if (err){
+                res.status(500).send({message: 'error al actualizar la imagen'})
+            }else{
+                if (!userUpdated){
+                    res.status(404).send({message: 'no se ha podido actualizar el usuario'})
+                }else {
+                    res.status(200).send({user: userUpdated})
+                }
+
+            }
+            
+
+        })
+
+    }else {
+        res.status(401).send({message: 'extension no valida'})
+    }
+
+    }else {
+        res.status(200).send({message: 'no has subido ninguna imagen...'})
+    }
+
+}
+
 module.exports = {
     pruebas,
     saveUser,
     loginUser,
-    updateUser
+    updateUser,
+    uploadImage
 };

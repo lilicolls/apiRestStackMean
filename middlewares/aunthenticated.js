@@ -22,7 +22,7 @@ exports.ensureAuth = function (req, res, next){
         }
     }
     catch(ex){
-        console.log(ex)
+     //   console.log(ex)
         return res.status(404).send({message: 'token no es valido'})
     } 
     req.user = payload; //a la peticion recibida le agrego el payload del token
