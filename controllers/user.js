@@ -1,4 +1,6 @@
 'use strict'
+const fs = require('fs')
+const path = require('path')
 const bcrypt = require ('bcrypt-nodejs') //modulo para encriptar contraseña
 const User = require('../models/user')
 const jwt = require('../services/jwt')
@@ -112,7 +114,6 @@ function updateUser(req, res){
 }
 
 function uploadImage(req,res){
-    
     const userId = req.params.id;
     const file_name = 'no subido...'
     console.log("entra al metodo")
@@ -155,10 +156,28 @@ function uploadImage(req,res){
 
 }
 
+function getImageFile(req,res){
+    // metodo para obtener imagen almacenada en la bdd
+    const imageFile = req.params.imageFile;
+    const pathFile = './uploads/users/' + imageFile;
+    console.log(pathFile)
+    fs.exists(pathFile, function (exists){
+        if(exists){
+         //   console.log("retorno imagen")
+            res.sendFile(path.resolve(pathFile))
+
+        }else{
+            res.status(404).send({message: 'la imagen no existe'})
+        }
+    })
+}
+
+
 module.exports = {
     pruebas,
     saveUser,
     loginUser,
     updateUser,
-    uploadImage
+    uploadImage,
+    getImageFile
 };
