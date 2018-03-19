@@ -33,7 +33,7 @@ function saveArtist (req,res ){
     artist.description = params.description;
     artist.image = 'null';
 
-    console.log(artist)
+    //console.log(artist)
     artist.save((err, artistStored)=>{
         if(err){
             res.status(500).send({message: 'error al guardar el artista'})
@@ -88,9 +88,54 @@ function updateArtist(req,res){
 
 }
 
+function deleteArtist(req,res){
+    //metodo para eliminar artistas con sus albums y canciones
+    const artistId = req.params.id;
+    Artist.findByIdAndRemove(artistId, (err, artistRemoved)=>{
+        if (err){
+            res.status(500).send({message: 'ha ocurrido un error al elimnar el artista'})
+        }else{
+            if(!artistRemoved){
+                res.status(404).send({message: 'El artista no ha sido eliminado'})
+            }else{
+                //res.status(200).send({artistRemoved})
+                console.log("eliminado el artista")
+                //Si se elimino el artistas, entonces elimnar sus albums
+
+                Album.find({artist: artistRemoved._id}).remove((err, albumRemoved)=>{
+                    if(err){
+                        res.status(500).send({message: 'error al eliminar el album'})
+                    }else{
+                        if(!albumRemoved){
+                            res.status(404).send({message: 'el album no ha sido eliminado'})
+                        }else{
+                            console.log("elimnado el album")
+                            // Si se elimino el album, entonces eliminar sus canciones
+                            Song.find({album: albumRemoved._id}).remove((err, songRemoved)=>{
+                                if (err){
+                                    res.status(500).send({message: 'error al eliminar la cancion'})
+                                }else{
+                                    if (!songRemoved){
+                                        res.status(404).send({message: 'no se ha eliminado la cancion'})
+                                    }else{
+                                        res.status(200).send({artist:artistRemoved})
+                                    }
+                                }
+                            }) 
+                        }
+                    }
+                }) 
+    
+            }
+        }
+    })
+
+}
+
 module.exports = {
     getArtist,
     saveArtist,
     getArtists,
-    updateArtist
+    updateArtist,
+    deleteArtist
 }
