@@ -7,7 +7,7 @@ const api = express.Router();
 const md_auth = require('../middlewares/aunthenticated')
 
 
-api.get('/artist', md_auth.ensureAuth, ArtistController.getArtist)
+api.get('/artist/:id', md_auth.ensureAuth, ArtistController.getArtist)
 api.post('/artist', md_auth.ensureAuth, ArtistController.saveArtist)
 
 module.exports = api

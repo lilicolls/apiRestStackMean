@@ -8,7 +8,21 @@ const Song = require ('../models/song')
 
 function getArtist(req,res){
     //metodo para extraer artista de la bdd
-    res.status(200).send({message: 'metodo get artist del controlador artist.js'})
+    const artistId = req.params.id;
+
+    Artist.findById(artistId, (err,artist)=>{
+        if(err){
+            res.status(500).send({message: 'Error en la peticion'})
+        }else{
+            if (!artist){
+                res.status(404).send({message: 'El artista no existe'})
+            }else{
+                res.status(200).send({artist})
+            }
+        }
+
+    })
+  
 }
 
 function saveArtist (req,res ){
